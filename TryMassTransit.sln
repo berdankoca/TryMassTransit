@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TryMassTransit.Api", "TryMassTransit.Api\TryMassTransit.Api.csproj", "{B3C2B2C9-2736-42EC-B574-8024842DE284}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TryMassTransit.Consumer", "TryMassTransit.Consumer\TryMassTransit.Consumer.csproj", "{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TryMassTransit.Shared", "TryMassTransit.Shared\TryMassTransit.Shared.csproj", "{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|x64.Build.0 = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Debug|x86.Build.0 = Debug|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|x64.ActiveCfg = Release|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|x64.Build.0 = Release|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3C2B2C9-2736-42EC-B574-8024842DE284}.Release|x86.Build.0 = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|x64.Build.0 = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|x64.ActiveCfg = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|x64.Build.0 = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{39FAD3E5-E804-4C66-81CB-FF81DB76D1E9}.Release|x86.Build.0 = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|x64.Build.0 = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Debug|x86.Build.0 = Debug|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|x64.ActiveCfg = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|x64.Build.0 = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|x86.ActiveCfg = Release|Any CPU
+		{D3F8AD78-5C10-4A7B-AFE1-C4C185512654}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {712D1C28-6328-4852-BBDF-834B9E2968A7}
+	EndGlobalSection
+EndGlobal
