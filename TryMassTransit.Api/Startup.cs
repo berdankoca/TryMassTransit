@@ -36,6 +36,8 @@ namespace TryMassTransit.Api
                 //Before the send a request we have to define the endpoint url which the consumer is listen
                 EndpointConvention.Map<GetMessages>(new Uri("rabbitmq://localhost/web-service-endpoint"));
 
+                EndpointConvention.Map<CreateReport>(new Uri("rabbitmq://localhost/web-service-request-endpoint"));
+
                 //When you run first time, consumer have to be started before publisher.
                 //Because exchanges and queue have to be bind each other.
                 //And the ReceiveEndpoint do that

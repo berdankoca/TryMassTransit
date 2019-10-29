@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using MassTransit;
 using System.Threading.Tasks;
+using GreenPipes;
+using MassTransit.Saga;
 
 namespace TryMassTransit.Consumer
 {
@@ -14,6 +16,9 @@ namespace TryMassTransit.Consumer
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MessageDBContext>();
+
+                    var reportStateMachine = new ReportStateMachine();
+                    var reportSagaRepository = new InMemorySagaRepository<ReportSagaState>();
 
                     services.AddMassTransit(mt =>
                     {
@@ -31,6 +36,7 @@ namespace TryMassTransit.Consumer
 
                             cfg.ReceiveEndpoint(host, "first-masstransit-queue", ep =>
                             {
+                                // ep.UseMessageRetry(r => r.Interval(3, 10000)); //try to consume 3 times message after 10 seconds
                                 ep.ConfigureConsumer<MessageConsumer>(provider);
 
                             });
@@ -38,8 +44,11 @@ namespace TryMassTransit.Consumer
                             cfg.ReceiveEndpoint(host, "web-service-endpoint", ep =>
                             {
                                 ep.ConfigureConsumer<GetMessagesConsumer>(provider);
+                            });
 
-                                Console.WriteLine(ep.InputAddress);
+                            cfg.ReceiveEndpoint(host, "web-service-request-endpoint", ep =>
+                            {
+                                ep.StateMachineSaga(reportStateMachine, reportSagaRepository);
                             });
 
                         }));
