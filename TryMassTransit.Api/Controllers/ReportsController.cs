@@ -22,7 +22,7 @@ namespace TryMassTransit.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<string>> Get(int id)
         {
-            await _sendEndpoint.Send<Shared.CreateReport>(new { ReportId = NewId.NextGuid(), RequestTime = DateTime.Now, EMail = "" });
+            await _sendEndpoint.Send<Shared.CreateReport>(new { ReportId = NewId.NextGuid(), RequestTime = DateTime.Now, EMail = "deneme@gmail.com" });
 
             return "value";
         }
