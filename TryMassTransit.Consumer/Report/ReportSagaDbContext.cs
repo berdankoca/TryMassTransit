@@ -1,18 +1,22 @@
 ﻿using MassTransit.EntityFrameworkCoreIntegration;
+using MassTransit.EntityFrameworkCoreIntegration.Mappings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TryMassTransit.Consumer
 {
-    public class ReportSagaDbContext : SagaDbContext<ReportSagaState, ReportSagaStateMap>
+    public class ReportSagaDbContext
+        : SagaDbContext
     {
-        public ReportSagaDbContext(DbContextOptions options) : base(options)
+        public ReportSagaDbContext(DbContextOptions options)
+            : base(options)
         {
+        }
 
+        protected override IEnumerable<ISagaClassMap> Configurations
+        {
+            get { yield return new ReportSagaStateMap(); }
         }
     }
 

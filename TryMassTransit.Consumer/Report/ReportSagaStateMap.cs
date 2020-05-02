@@ -1,24 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit.EntityFrameworkCoreIntegration.Mappings;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TryMassTransit.Consumer
 {
-    public class ReportSagaStateMap : IEntityTypeConfiguration<ReportSagaState>
+    public class ReportSagaStateMap : SagaClassMap<ReportSagaState>
     {
-        public void Configure(EntityTypeBuilder<ReportSagaState> builder)
+        protected override void Configure(EntityTypeBuilder<ReportSagaState> entity, ModelBuilder model)
         {
-            builder.Property(b => b.CorrelationId);
-            builder.Property(b => b.CurrentState)
+            base.Configure(entity, model);
+
+            entity.Property(b => b.CorrelationId);
+            entity.Property(b => b.CurrentState)
                 .HasMaxLength(200);
-            builder.Property(b => b.ReportId);
-            builder.Property(b => b.RequestTime);
-            builder.Property(b => b.EMail)
+            entity.Property(b => b.ReportId);
+            entity.Property(b => b.RequestTime);
+            entity.Property(b => b.EMail)
                 .HasMaxLength(200);
 
-            builder.ToTable("sagaReportSagaState");
+            entity.ToTable("sagaReportSagaState");
         }
     }
 }

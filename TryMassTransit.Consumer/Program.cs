@@ -19,24 +19,37 @@ namespace TryMassTransit.Consumer
                 {
                     services.AddSingleton<MessageDBContext>();
 
-                    services.AddDbContext<ReportSagaDbContext>(options =>
-                        options.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Database=TryMassTransit;Integrated Security=True;", sqlOptions =>
-                        {
-                            sqlOptions.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
-                        })
-                    );
-                    services.AddSingleton<ISagaRepository<ReportSagaState>>(sp => 
-                        EntityFrameworkSagaRepository<ReportSagaState>.CreateOptimistic(() => 
-                            services.BuildServiceProvider().GetRequiredService<ReportSagaDbContext>()
-                        )
-                    );
+                    //services.AddDbContext<ReportSagaDbContext>(options =>
+                    //    options.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Database=TryMassTransit;Integrated Security=True;", sqlOptions =>
+                    //    {
+                    //        sqlOptions.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
+                    //    })
+                    //);
+                    //services.AddSingleton(sp => 
+                    //    EntityFrameworkSagaRepository<ReportSagaState>.CreateOptimistic(() => 
+                    //        services.BuildServiceProvider().GetRequiredService<ReportSagaDbContext>()
+                    //    )
+                    //);
                     //new InMemorySagaRepository<ReportSagaState>()
 
                     services.AddMassTransit(mt =>
                     {
                         mt.AddConsumer<MessageConsumer>();
                         mt.AddConsumer<GetMessagesConsumer>();
-                        mt.AddSagaStateMachine<ReportStateMachine, ReportSagaState>();
+                        mt.AddSagaStateMachine<ReportStateMachine, ReportSagaState>()
+                            .EntityFrameworkRepository(r =>
+                            {
+                                r.ConcurrencyMode = MassTransit.EntityFrameworkCoreIntegration.ConcurrencyMode.Pessimistic;
+
+                                r.AddDbContext<DbContext, ReportSagaDbContext>((provider, builder) =>
+                                {
+                                    builder.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Database=TryMassTransit;Integrated Security=True;", m =>
+                                    {
+                                        m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+                                        m.MigrationsHistoryTable($"__{nameof(ReportSagaDbContext)}");
+                                    });
+                                });
+                            });
 
                         mt.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                         {
@@ -47,23 +60,23 @@ namespace TryMassTransit.Consumer
                             });
 
 
-                            cfg.ReceiveEndpoint(host, "first-masstransit-queue", ep =>
+                            cfg.ReceiveEndpoint("first-masstransit-queue", ep =>
                             {
                                 // ep.UseMessageRetry(r => r.Interval(3, 10000)); //try to consume 3 times message after 10 seconds
                                 //After the AddConsumer we can use like that
                                 ep.ConfigureConsumer<MessageConsumer>(provider);
                             });
 
-                            cfg.ReceiveEndpoint(host, "web-service-endpoint", ep =>
+                            cfg.ReceiveEndpoint("web-service-endpoint", ep =>
                             {
                                 ep.ConfigureConsumer<GetMessagesConsumer>(provider);
                             });
 
-                            cfg.ReceiveEndpoint(host, "web-service-request-endpoint", ep =>
+                            cfg.ReceiveEndpoint("web-service-request-endpoint", ep =>
                             {
                                 //http://masstransit-project.com/MassTransit/advanced/sagas/persistence.html#publishing-and-sending-from-sagas
                                 ep.UseInMemoryOutbox();
-
+                                //ep.
                                 ep.ConfigureSaga<ReportSagaState>(provider);
                             });
 

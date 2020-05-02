@@ -3,10 +3,8 @@ using MassTransit;
 using MassTransit.AspNetCoreIntegration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using TryMassTransit.Shared;
 
 namespace TryMassTransit.Api
@@ -15,20 +13,22 @@ namespace TryMassTransit.Api
     {
         public IConfiguration Configuration { get; }
 
-        public ILoggerFactory LoggerFactory { get; }
+        //public ILoggerFactory LoggerFactory { get; }
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            LoggerFactory = loggerFactory;    
+            //LoggerFactory = loggerFactory;    
         }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddMvc()
+            //    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddControllers();
 
             services.AddMassTransit(mt =>
             {
@@ -50,8 +50,6 @@ namespace TryMassTransit.Api
                                 hostConfigurator.Password("guest");
                             }
                         );
-
-                        cfg.UseExtensionsLogging(LoggerFactory);
                     })
                 );
             });
@@ -74,7 +72,13 @@ namespace TryMassTransit.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
