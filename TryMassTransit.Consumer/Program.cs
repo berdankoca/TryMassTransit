@@ -3,10 +3,12 @@ using Microsoft.Extensions.Hosting;
 using System;
 using MassTransit;
 using System.Threading.Tasks;
-using MassTransit.Saga;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using MassTransit.EntityFrameworkCoreIntegration.Saga;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Serilog;
+using Serilog.Events;
 
 namespace TryMassTransit.Consumer
 {
@@ -14,23 +16,28 @@ namespace TryMassTransit.Consumer
     {
         public static async Task Main(string[] args)
         {
+            var buildConfiguration = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+               .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+               .AddEnvironmentVariables()
+               .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
             var builder = new HostBuilder()
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddSerilog();
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MessageDBContext>();
-
-                    //services.AddDbContext<ReportSagaDbContext>(options =>
-                    //    options.UseSqlServer("Data Source=(LocalDb)\\MSSQLLocalDB;Database=TryMassTransit;Integrated Security=True;", sqlOptions =>
-                    //    {
-                    //        sqlOptions.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name);
-                    //    })
-                    //);
-                    //services.AddSingleton(sp => 
-                    //    EntityFrameworkSagaRepository<ReportSagaState>.CreateOptimistic(() => 
-                    //        services.BuildServiceProvider().GetRequiredService<ReportSagaDbContext>()
-                    //    )
-                    //);
-                    //new InMemorySagaRepository<ReportSagaState>()
 
                     services.AddMassTransit(mt =>
                     {
