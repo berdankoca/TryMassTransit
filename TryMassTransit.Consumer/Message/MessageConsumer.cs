@@ -1,11 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using MassTransit;
-using TryMassTransit.Shared;
 
 namespace TryMassTransit.Consumer
 {
-    public class MessageConsumer : IConsumer<Message>
+    public class MessageConsumer : IConsumer<Shared.Message>
     {
         private readonly MessageDBContext _messageDBContext;
 
@@ -14,7 +13,7 @@ namespace TryMassTransit.Consumer
             _messageDBContext = messageDBContext;
         }
 
-        public Task Consume(ConsumeContext<Message> context)
+        public Task Consume(ConsumeContext<Shared.Message> context)
         {
             Console.WriteLine($"Consumer: { context.Message.Text }");
             _messageDBContext.Add(context.Message);

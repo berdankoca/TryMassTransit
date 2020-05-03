@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using TryMassTransit.Shared;
 
 namespace TryMassTransit.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace TryMassTransit.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<string>> Get(int id)
         {
-            await _sendEndpoint.Send<Shared.CreateReport>(new { ReportId = NewId.NextGuid(), RequestTime = DateTime.Now, EMail = "deneme@gmail.com" });
+            await _sendEndpoint.Send<CreateReport>(new { ReportId = NewId.NextGuid(), RequestTime = DateTime.Now, EMail = "deneme@gmail.com" });
 
             return "value";
         }

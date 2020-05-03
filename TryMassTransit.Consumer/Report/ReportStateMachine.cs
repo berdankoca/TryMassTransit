@@ -8,8 +8,6 @@ namespace TryMassTransit.Consumer
 {
     public class ReportStateMachine : MassTransitStateMachine<ReportSagaState>
     {
-        public State Active { get; private set; }
-
         public State Created { get; private set; }
 
         public State Failed { get; private set; }

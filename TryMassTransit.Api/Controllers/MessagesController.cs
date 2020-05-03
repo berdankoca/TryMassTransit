@@ -34,7 +34,7 @@ namespace TryMassTransit.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<string>> Get(int id)
         {
-            await _publishEndpoint.Publish<Shared.Message>(new { Text = $"Hello { id }" });
+            await _publishEndpoint.Publish<Message>(new { Text = $"Hello { id }" });
 
             return "value";
         }

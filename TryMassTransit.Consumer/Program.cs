@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Serilog;
 using Serilog.Events;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using MassTransit.Definition;
 
 namespace TryMassTransit.Consumer
 {
@@ -37,13 +39,15 @@ namespace TryMassTransit.Consumer
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
                     services.AddSingleton<MessageDBContext>();
 
                     services.AddMassTransit(mt =>
                     {
-                        mt.AddConsumer<MessageConsumer>();
-                        mt.AddConsumer<GetMessagesConsumer>();
-                        mt.AddSagaStateMachine<ReportStateMachine, ReportSagaState>()
+                        mt.AddConsumersFromNamespaceContaining<MessageConsumer>();
+                        //mt.AddConsumer<GetMessagesConsumer>();
+
+                        mt.AddSagaStateMachine<ReportStateMachine, ReportSagaState>(typeof(ReportStateMachineDefinition))
                             .EntityFrameworkRepository(r =>
                             {
                                 r.ConcurrencyMode = MassTransit.EntityFrameworkCoreIntegration.ConcurrencyMode.Pessimistic;
@@ -66,26 +70,7 @@ namespace TryMassTransit.Consumer
                                 hostConfigurator.Password("guest");
                             });
 
-
-                            cfg.ReceiveEndpoint("first-masstransit-queue", ep =>
-                            {
-                                // ep.UseMessageRetry(r => r.Interval(3, 10000)); //try to consume 3 times message after 10 seconds
-                                //After the AddConsumer we can use like that
-                                ep.ConfigureConsumer<MessageConsumer>(provider);
-                            });
-
-                            cfg.ReceiveEndpoint("web-service-endpoint", ep =>
-                            {
-                                ep.ConfigureConsumer<GetMessagesConsumer>(provider);
-                            });
-
-                            cfg.ReceiveEndpoint("web-service-request-endpoint", ep =>
-                            {
-                                //http://masstransit-project.com/MassTransit/advanced/sagas/persistence.html#publishing-and-sending-from-sagas
-                                ep.UseInMemoryOutbox();
-                                //ep.
-                                ep.ConfigureSaga<ReportSagaState>(provider);
-                            });
+                            cfg.ConfigureEndpoints(provider);
 
                         }));
                     });

@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
-using TryMassTransit.Shared;
 
 namespace TryMassTransit.Consumer
 {
     public class MessageDBContext
     {
-        private ConcurrentBag<Message> Messages = new ConcurrentBag<Message>();
+        private ConcurrentBag<Shared.Message> Messages = new ConcurrentBag<Shared.Message>();
 
-        public void Add(Message message)
+        public void Add(Shared.Message message)
         {
             Messages.Add(message);
         }
 
-        public IQueryable<Message> GetList()
+        public IQueryable<Shared.Message> GetList()
         {
             return Messages.AsQueryable();
         }
