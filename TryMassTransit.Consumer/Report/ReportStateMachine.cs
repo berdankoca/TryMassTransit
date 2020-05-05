@@ -1,4 +1,5 @@
 ﻿using Automatonymous;
+using MassTransit;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,8 +46,17 @@ namespace TryMassTransit.Consumer
                     {
                         await Console.Out.WriteLineAsync($"CreateReportConsume: { context.Instance.CorrelationId }");
                     })
-                    //.Activity()
-                    .Publish(context => new ReportRequestReceivedEvent(context.Instance))
+                    //First way to publish
+                    //.Publish(context => new ReportRequestReceivedEvent(context.Instance))
+                    //Second way to publish
+                    .PublishAsync(context => context.Init<ReportRequestReceived>(
+                        new {
+                            context.Instance.CorrelationId,
+                            context.Instance.ReportId,
+                            context.Instance.RequestTime,
+                            context.Instance.EMail
+                        })
+                    )
                     .Catch<ArgumentNullException>(context => context.Publish(x => new ReportRequestFailedEvent(x.Instance)).TransitionTo(Failed)),
 
                 When(ReportRequestReceived)
@@ -65,15 +75,16 @@ namespace TryMassTransit.Consumer
 
             During(Created,
                 When(ReportCreated)
-                    .Then(context =>
-                    {
-                        context.Instance.ReportId = context.Data.ReportId;
-                        context.Instance.RequestTime = context.Data.RequestTime;
-                        context.Instance.EMail = context.Data.EMail;
+                    .Activity(a => a.OfType<PublishReportCreatedActivity>())
+                    //.Then(context =>
+                    //{
+                    //    context.Instance.ReportId = context.Data.ReportId;
+                    //    context.Instance.RequestTime = context.Data.RequestTime;
+                    //    context.Instance.EMail = context.Data.EMail;
 
-                        Console.WriteLine($"ReportCreated: Report is sending via EMail: {context.Instance.CorrelationId }");
-                    })
-                    .ThenAsync(context => Console.Out.WriteLineAsync($"ReportCreated: Report sent via EMail: {context.Instance.CorrelationId }"))
+                    //    Console.WriteLine($"ReportCreated: Report is sending via EMail: {context.Instance.CorrelationId }");
+                    //})
+                    //.ThenAsync(context => Console.Out.WriteLineAsync($"ReportCreated: Report sent via EMail: {context.Instance.CorrelationId }"))
                     .Finalize()
             );
 

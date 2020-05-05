@@ -42,6 +42,9 @@ namespace TryMassTransit.Consumer
                     services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
                     services.AddSingleton<MessageDBContext>();
 
+                    //If the automatonymous activity need to create new instance via constructor injection we have to register it
+                    services.AddScoped<PublishReportCreatedActivity>();
+                    
                     services.AddMassTransit(mt =>
                     {
                         mt.AddConsumersFromNamespaceContaining<MessageConsumer>();
@@ -60,7 +63,7 @@ namespace TryMassTransit.Consumer
                                         m.MigrationsHistoryTable($"__{nameof(ReportSagaDbContext)}");
                                     });
                                 });
-                            });
+                            });                        
 
                         mt.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                         {
