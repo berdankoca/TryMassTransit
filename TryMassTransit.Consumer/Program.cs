@@ -42,6 +42,10 @@ namespace TryMassTransit.Consumer
                     services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
                     services.AddSingleton<MessageDBContext>();
 
+                    //If you want to add consumer definitoan there is two way,
+                    //first add services as a scoped or addConsumer with type of definiton
+                    //services.AddScoped<MessageConsumerDefiniton>();
+
                     //If the automatonymous activity need to create new instance via constructor injection we have to register it
                     services.AddScoped<PublishReportCreatedActivity>();
                     
@@ -49,6 +53,7 @@ namespace TryMassTransit.Consumer
                     {
                         mt.AddConsumersFromNamespaceContaining<MessageConsumer>();
                         //mt.AddConsumer<GetMessagesConsumer>();
+                        //mt.AddConsumer<MessageConsumer>(typeof(MessageConsumerDefiniton));
 
                         mt.AddSagaStateMachine<ReportStateMachine, ReportSagaState>(typeof(ReportStateMachineDefinition))
                             .EntityFrameworkRepository(r =>
