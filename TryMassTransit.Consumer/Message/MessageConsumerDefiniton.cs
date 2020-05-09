@@ -1,6 +1,8 @@
 ﻿using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
+using MassTransit.RabbitMqTransport.Configuration;
+using RabbitMQ.Client;
 
 namespace TryMassTransit.Consumer
 {
@@ -10,12 +12,12 @@ namespace TryMassTransit.Consumer
 
         public MessageConsumerDefiniton()
         {
-            EndpointName = "deneme-queue";
+            //EndpointName = "deneme-queue";
         }
 
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<MessageConsumer> consumerConfigurator)
         {
-            
+            //((RabbitMqReceiveEndpointConfiguration)endpointConfigurator).ExchangeType = ExchangeType.Direct;
             base.ConfigureConsumer(endpointConfigurator, consumerConfigurator);
         }
 

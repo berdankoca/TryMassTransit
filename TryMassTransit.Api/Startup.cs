@@ -1,6 +1,5 @@
 ﻿using System;
 using MassTransit;
-using MassTransit.AspNetCoreIntegration;
 using MassTransit.Definition;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +9,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TryMassTransit.Shared;
+using MassTransit.MultiBus;
+using TryMassTransit.Api.Contracts;
+using Microsoft.VisualBasic;
+using MassTransit.Mediator;
+using MassTransit.Registration;
+using MassTransit.Context;
 
 namespace TryMassTransit.Api
 {
@@ -26,13 +31,8 @@ namespace TryMassTransit.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc()
-            //    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-            services.AddControllers();
-
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
-            services.AddMassTransit(mt => 
+            services.AddMassTransit<IRabbitMQBus>(mt => 
             {
                 mt.AddRequestClient<GetMessages>();
                 //Before the send a request we have to define the endpoint url which the consumer is listen
@@ -58,8 +58,38 @@ namespace TryMassTransit.Api
                 );
             });
 
-            services.AddSingleton<IHostedService, BusService>();
+            services.AddMassTransit<IDomainEventBus>(mt =>
+            {
+                mt.AddRequestClient<OrderUpdating>();
+             
+                mt.AddConsumer<Shipment>();
 
+                IMediator MediatorFactory(IServiceProvider serviceProvider)
+                {
+                    var provider = serviceProvider.GetRequiredService<IConfigurationServiceProvider>();
+
+                    var loggerFactory = provider.GetService<ILoggerFactory>();
+                    if (loggerFactory != null)
+                        LogContext.ConfigureCurrentLogContext(loggerFactory);
+
+                    return Bus.Factory.CreateMediator(cfg =>
+                    {
+                        var registrationInstance = provider.GetRequiredService<Bind<IDomainEventBus, IRegistration>>();
+
+                        registrationInstance.Value.ConfigureConsumers(cfg);
+                        registrationInstance.Value.ConfigureSagas(cfg);
+                    });
+                }
+
+                
+                services.TryAddSingleton(MediatorFactory);
+                services.AddSingleton(provider => Bind<IDomainEventBus>.Create<IClientFactory>(provider.GetRequiredService<IMediator>()));
+
+            });
+
+            //services.AddSingleton<IHostedService, BusService>();
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

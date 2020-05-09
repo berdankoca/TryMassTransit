@@ -11,6 +11,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MassTransit.Definition;
+using RabbitMQ.Client;
 
 namespace TryMassTransit.Consumer
 {
@@ -77,6 +78,8 @@ namespace TryMassTransit.Consumer
                                 hostConfigurator.Username("guest");
                                 hostConfigurator.Password("guest");
                             });
+
+                            //cfg.ReceiveEndpoint("", e => { e.ExchangeType = ExchangeType.Direct; });
 
                             cfg.ConfigureEndpoints(provider);
 
