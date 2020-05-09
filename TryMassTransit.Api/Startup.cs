@@ -66,15 +66,15 @@ namespace TryMassTransit.Api
 
                 IMediator MediatorFactory(IServiceProvider serviceProvider)
                 {
-                    var provider = serviceProvider.GetRequiredService<IConfigurationServiceProvider>();
+                    //var provider = serviceProvider.GetRequiredService<IConfigurationServiceProvider>();
 
-                    var loggerFactory = provider.GetService<ILoggerFactory>();
+                    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
                     if (loggerFactory != null)
                         LogContext.ConfigureCurrentLogContext(loggerFactory);
 
                     return Bus.Factory.CreateMediator(cfg =>
                     {
-                        var registrationInstance = provider.GetRequiredService<Bind<IDomainEventBus, IRegistration>>();
+                        var registrationInstance = serviceProvider.GetRequiredService<Bind<IDomainEventBus, IRegistration>>();
 
                         registrationInstance.Value.ConfigureConsumers(cfg);
                         registrationInstance.Value.ConfigureSagas(cfg);
